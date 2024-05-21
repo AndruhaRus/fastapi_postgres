@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: fastapi_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - fastapi_network
+
+  web:
+    build: .
+    depends_on:
+      - db
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgres://user:password@db:5432/fastapi_db
+    networks:
+      - fastapi_network
+
+networks:
+  fastapi_network:
+
+volumes:
+  postgres_data:
